@@ -1,7 +1,6 @@
 /*
  * DBeaver - Universal Database Manager
- * Copyright (C) 2016 Karl Griesser (fullref@gmail.com)
- * Copyright (C) 2010-2024 DBeaver Corp and others
+ * Copyright (C) 2010-2026 DBeaver Corp and others
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,13 +23,12 @@ import org.jkiss.dbeaver.DBException;
 import org.jkiss.dbeaver.Log;
 import org.jkiss.dbeaver.ext.exasol.model.ExasolSchema;
 import org.jkiss.dbeaver.ext.exasol.model.ExasolTable;
-import org.jkiss.dbeaver.ext.exasol.model.ExasolTableBase;
 import org.jkiss.dbeaver.model.runtime.VoidProgressMonitor;
 import org.jkiss.dbeaver.model.struct.DBSObject;
 import org.jkiss.dbeaver.ui.navigator.NavigatorUtils;
 import org.jkiss.utils.CommonUtils;
 
-import java.util.HashSet;
+import java.util.ArrayList;
 import java.util.List;
 
 public class ExasolImportTableToolCommandHandler extends AbstractHandler {
@@ -52,20 +50,10 @@ public class ExasolImportTableToolCommandHandler extends AbstractHandler {
             }
         }
 
-        // create TableBase Objects list
-        @SuppressWarnings({"unchecked", "rawtypes"})
-        HashSet<ExasolTableBase> tableBaseObjects = new HashSet();
-
-        //add tables
-        for (ExasolTable table : tables) {
-            tableBaseObjects.add((ExasolTableBase) table);
-        }
-
-
-        if (!tableBaseObjects.isEmpty()) {
+        if (!tables.isEmpty()) {
             ExasolImportTableToolDialog dialog = new ExasolImportTableToolDialog(
                 HandlerUtil.getActivePart(event).getSite(),
-                tableBaseObjects
+                new ArrayList<>(tables)
             );
             return dialog.open();
         }

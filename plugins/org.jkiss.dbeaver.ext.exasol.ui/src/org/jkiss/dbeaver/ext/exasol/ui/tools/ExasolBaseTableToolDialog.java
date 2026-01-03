@@ -1,6 +1,6 @@
 /*
  * DBeaver - Universal Database Manager
- * Copyright (C) 2010-2025 DBeaver Corp and others
+ * Copyright (C) 2010-2026 DBeaver Corp and others
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,8 +18,6 @@ package org.jkiss.dbeaver.ext.exasol.ui.tools;
 
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.core.runtime.jobs.IJobChangeEvent;
-import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.widgets.Tree;
@@ -97,61 +95,59 @@ public abstract class ExasolBaseTableToolDialog extends GenerateMultiSQLDialog<E
 	{
         final int nbExtraColumns = getNumberExtraResultingColumns();
 
-        return new SQLScriptStatusDialog<ExasolTableBase>(getTitle() + " " + ExasolMessages.dialog_table_tools_progress,null) {
-        	@Override
-        	protected void createStatusColumns(Tree objectTree)
-        	{
+        return new SQLScriptStatusDialog<>(getTitle() + " " + ExasolMessages.dialog_table_tools_progress, null) {
+            @Override
+            protected void createStatusColumns(Tree objectTree) {
                 TreeColumn msgColumn = new TreeColumn(objectTree, SWT.NONE);
                 msgColumn.setText(ExasolMessages.dialog_table_tools_result);
 
                 for (int i = 0; i < nbExtraColumns; i++) {
                     new TreeColumn(objectTree, SWT.NONE);
                 }
-        	}
-        	
+            }
+
             // DF: This method is for tools that return resultsets
             @Override
-            public void processObjectResults(@NotNull ExasolTableBase exasolTable, @Nullable DBCStatement statement, @Nullable DBCResultSet resultSet) throws DBCException
-            {
+            public void processObjectResults(
+                @NotNull ExasolTableBase exasolTable,
+                @Nullable DBCStatement statement,
+                @Nullable DBCResultSet resultSet
+            ) throws DBCException {
                 if (resultSet == null) {
                     return;
                 }
                 // Retrieve column names
-            	DBCResultSetMetaData rsMetaData = resultSet.getMeta();
+                DBCResultSetMetaData rsMetaData = resultSet.getMeta();
 
                 try {
 
                     TreeItem treeItem = getTreeItem(exasolTable);
                     Font f = UIUtils.makeBoldFont(treeItem.getFont());
-                    if (treeItem != null) {
-
-                        // Display the column names
-                        TreeItem subItem = null;
-                        subItem = new TreeItem(treeItem, SWT.NONE);
-                        subItem.setFont(f);
-                        for (DBCAttributeMetaData column: rsMetaData.getAttributes()) {
-                            subItem.setText(column.getOrdinalPosition(), column.getName());
-                            subItem.setGrayed(true);
-                        }
-
-                        // Display the data for each row
-                        while (resultSet.nextRow()) {
-                            subItem = new TreeItem(treeItem, SWT.NONE);
-                            for (int i = 0; i < rsMetaData.getAttributes().size(); i++) {
-                                subItem.setText(i, CommonUtils.toString(resultSet.getAttributeValue(i)));
-                                i++;
-                            }
-                        }
-                        treeItem.setExpanded(true);
+                    // Display the column names
+                    TreeItem subItem;
+                    subItem = new TreeItem(treeItem, SWT.NONE);
+                    subItem.setFont(f);
+                    for (DBCAttributeMetaData column : rsMetaData.getAttributes()) {
+                        subItem.setText(column.getOrdinalPosition(), column.getName());
+                        subItem.setGrayed(true);
                     }
+
+                    // Display the data for each row
+                    while (resultSet.nextRow()) {
+                        subItem = new TreeItem(treeItem, SWT.NONE);
+                        for (int i = 0; i < rsMetaData.getAttributes().size(); i++) {
+                            subItem.setText(i, CommonUtils.toString(resultSet.getAttributeValue(i)));
+                            i++;
+                        }
+                    }
+                    treeItem.setExpanded(true);
                 } catch (Exception e) {
                     throw new DBCException(e.getMessage());
                 }
 
             }
 
-        
-        	
+
         };
 	}
 	
@@ -195,7 +191,7 @@ public abstract class ExasolBaseTableToolDialog extends GenerateMultiSQLDialog<E
                                 	
                                 	Integer[] resultSetData = new Integer[] { affectedRows };
 
-                                    JDBCStatementImpl<Statement> stmt = new JDBCStatementImpl<Statement>(
+                                    JDBCStatementImpl<Statement> stmt = new JDBCStatementImpl<>(
                                         (JDBCSession) session, () -> statement, null, true);
                                     final LocalResultSet resultSet = new LocalResultSet<>(session, stmt);
                                 	resultSet.addColumn("ROWS_AFFECTED", DBPDataKind.NUMERIC);
@@ -230,11 +226,6 @@ public abstract class ExasolBaseTableToolDialog extends GenerateMultiSQLDialog<E
             }
         };
         job.setUser(false);
-        job.addJobChangeListener(new JobChangeAdapter() {
-            @Override
-            public void done(IJobChangeEvent event) {
-            }
-        });
         job.schedule();
     }
 

@@ -1,7 +1,6 @@
 /*
  * DBeaver - Universal Database Manager
- * Copyright (C) 2016 Karl Griesser (fullref@gmail.com)
- * Copyright (C) 2010-2024 DBeaver Corp and others
+ * Copyright (C) 2010-2026 DBeaver Corp and others
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,8 +30,9 @@ import org.jkiss.dbeaver.model.struct.DBSObject;
 import org.jkiss.dbeaver.ui.navigator.NavigatorUtils;
 import org.jkiss.utils.CommonUtils;
 
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 public class ExasolExportTableToolCommandHandler extends AbstractHandler {
 
@@ -54,19 +54,12 @@ public class ExasolExportTableToolCommandHandler extends AbstractHandler {
             }
         }
 
-        // create TableBase Objects list
-        @SuppressWarnings({"unchecked", "rawtypes"})
-        HashSet<ExasolTableBase> tableBaseObjects = new HashSet();
+        Set<ExasolTableBase> tableBaseObjects = new LinkedHashSet<>();
 
         //add tables
-        for (ExasolTable table : tables) {
-            tableBaseObjects.add((ExasolTableBase) table);
-        }
-
+        tableBaseObjects.addAll(tables);
         //add views
-        for (ExasolView view : views) {
-            tableBaseObjects.add((ExasolTableBase) view);
-        }
+        tableBaseObjects.addAll(views);
 
         if (!tableBaseObjects.isEmpty()) {
             ExasolExportTableToolDialog dialog = new ExasolExportTableToolDialog(

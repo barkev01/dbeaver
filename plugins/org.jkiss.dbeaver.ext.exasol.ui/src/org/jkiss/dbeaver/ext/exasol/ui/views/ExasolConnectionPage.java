@@ -1,6 +1,6 @@
 /*
  * DBeaver - Universal Database Manager
- * Copyright (C) 2010-2025 DBeaver Corp and others
+ * Copyright (C) 2010-2026 DBeaver Corp and others
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -48,11 +48,10 @@ public class ExasolConnectionPage extends ConnectionPageWithAuth implements IDia
     private Text backupHostText;
     private Text portText;
     private Button useBackupHostList;
-    private boolean showBackupHosts = false;
     private Button encryptCommunication;
     private Button useLegacyEncryption;
 
-    private Image logoImage;
+    private final Image logoImage;
 
     public ExasolConnectionPage() {
         logoImage = createImage("icons/exasol.png"); //$NON-NLS-1$
@@ -90,6 +89,7 @@ public class ExasolConnectionPage extends ConnectionPageWithAuth implements IDia
             backupHostLabel = UIUtils.createControlLabel(addrGroup, ExasolMessages.label_backup_host_list);
             gd = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING);
             backupHostLabel.setLayoutData(gd);
+            boolean showBackupHosts = false;
             backupHostLabel.setEnabled(showBackupHosts);
 
             Composite bhPlaceholder = UIUtils.createComposite(addrGroup, 2);

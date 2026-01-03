@@ -14,24 +14,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jkiss.dbeaver.ext.exasol.ui.editors;
+package org.jkiss.dbeaver.ext.exasol.ui;
 
-import org.jkiss.dbeaver.ext.exasol.editors.ExasolSourceObject;
-import org.jkiss.dbeaver.model.runtime.DBRProgressMonitor;
-import org.jkiss.dbeaver.ui.editors.sql.SQLSourceViewer;
+import org.eclipse.ui.plugin.AbstractUIPlugin;
+import org.osgi.framework.BundleContext;
 
-public class ExasolSourceViewEditor extends SQLSourceViewer<ExasolSourceObject> {
-    public ExasolSourceViewEditor() {
+/**
+ * The activator class controls the plug-in life cycle
+ */
+public class ExasolUIActivator extends AbstractUIPlugin {
+
+    /**
+     * The constructor
+     */
+    public ExasolUIActivator() {
     }
 
-    @Override
-    protected boolean isReadOnly() {
-        return false;
+    public void start(BundleContext context) throws Exception {
+        super.start(context);
     }
 
-    @Override
-    protected void setSourceText(DBRProgressMonitor monitor, String sourceText) {
-        getInputPropertySource().setPropertyValue(monitor, "objectDefinitionText", sourceText);
+    public void stop(BundleContext context) throws Exception {
+        super.stop(context);
     }
 
 }
