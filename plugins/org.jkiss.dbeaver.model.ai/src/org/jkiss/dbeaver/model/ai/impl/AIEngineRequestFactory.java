@@ -97,7 +97,7 @@ public class AIEngineRequestFactory {
         // Build DB snapshot
 
         String dbSnapshot = "";
-        boolean isContextTruncated = false;
+        boolean isContextTruncated = true;
         if (databaseContext != null && dbSnapshotTokenBudget > 0) {
             AISchemaGenerationOptions ddlOptions = buildOptions(dbSnapshotTokenBudget);
             AIDatabaseSnapshotService.TokenBoundedStringBuilder dbSnapshotBuilder = databaseSnapshotService.createDbSnapshot(monitor, databaseContext, ddlOptions);
