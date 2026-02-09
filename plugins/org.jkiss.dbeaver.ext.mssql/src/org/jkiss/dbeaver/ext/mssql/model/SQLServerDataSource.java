@@ -76,6 +76,7 @@ public class SQLServerDataSource
     private volatile transient boolean hasStatistics;
     private final boolean isBabelfish;
     private boolean isSynapseDatabase;
+    private final boolean isFabricDatabase;
 
     public SQLServerDataSource(DBRProgressMonitor monitor, DBPDataSourceContainer container)
         throws DBException
@@ -171,6 +172,10 @@ public class SQLServerDataSource
 
     public boolean isSynapseDatabase() {
         return isSynapseDatabase;
+    }
+
+    public boolean isFabricDatabase() {
+        return isFabricDatabase;
     }
 
     public boolean isAtLeastV16() {
@@ -342,6 +347,10 @@ public class SQLServerDataSource
                 if ("6".equals(result) || "11".equals(result)) {
                     // SERVERPROPERTY returns int 6 or 11 if it is Azure Synapse
                     isSynapseDatabase = true;
+                }
+                if("11".equals(result) || "12".equals(result)){
+                    // SERVERPROPERTY returns int 11 or 12 if it is Fabric Warehouse/Lakehouse/Database 
+                    isFabricDatabase = true;
                 }
             } catch (SQLException e) {
                 log.debug("Can't read Database Engine edition info", e);
